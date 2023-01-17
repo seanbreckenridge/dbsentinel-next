@@ -1,2 +1,2 @@
 # dbsentinel-next
-frontend for <github.com/seanbreckenridge/dbsentinel>
+frontend for <https://github.com/seanbreckenridge/dbsentinel>
