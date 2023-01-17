@@ -19,9 +19,7 @@ import { api } from "../utils/api";
 const ALLOWED_JSON_KEYS = ["num_episodes", "volumes", "chapters", "media_type"];
 
 const unslugify = (slug: string) => {
-  return slug
-    .split("_")
-    .join(" ");
+  return slug.split("_").join(" ");
 };
 
 // TODO: Add ability to sort
@@ -425,10 +423,17 @@ const Query: NextPage = () => {
                                       </li>
                                     );
                                   })}
-                                <li className="mx-3 flex flex-row items-center justify-center" title="Show All Info">
-                                  <a className="text-blue-600 text-xs cursor" role="button" onClick={() => {
-                                    alert(JSON.stringify(entry, null, 2));
-                                    }}>
+                                <li
+                                  className="mx-3 flex flex-row items-center justify-center"
+                                  title="Show All Info"
+                                >
+                                  <a
+                                    className="cursor text-xs text-blue-600"
+                                    role="button"
+                                    onClick={() => {
+                                      alert(JSON.stringify(entry, null, 2));
+                                    }}
+                                  >
                                     more info
                                   </a>
                                 </li>
@@ -447,6 +452,23 @@ const Query: NextPage = () => {
               <div className="text-gray-500">Loading...</div>
             )}
           </div>
+        </section>
+        <section className="flex w-full flex-col items-center justify-center p-3">
+          <ReactPaginate
+            breakLabel="..."
+            nextLabel={<FontAwesomeIcon icon={faChevronRight} />}
+            onPageChange={(e) => {
+              setPage(e.selected);
+              usePageRef.current = true;
+            }}
+            pageRangeDisplayed={3}
+            pageCount={pageCount}
+            containerClassName="pagination"
+            activeClassName={"item active "}
+            breakClassName={"item break-me "}
+            pageClassName={"item pagination-page "}
+            previousLabel={<FontAwesomeIcon icon={faChevronLeft} />}
+          />
         </section>
       </main>
     </>
