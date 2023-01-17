@@ -18,7 +18,7 @@ export default function About() {
         </li>
         <li className="ml-4">
           Save/keep track of deleted/denied (user-submitted entries which are
-          denied by MAL staff, which has been happening more as of late), so the
+          denied/denied by MAL moderators because they dont meet site guidelines), so the
           data is not lost forever
         </li>
         <li className="ml-4">
