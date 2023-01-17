@@ -38,7 +38,7 @@ async function requestBackend<T>({
 
   // console.log(resp.data);
 
-  if (resp.status !== 200) {
+  if (resp.status >= 400) {
     throw new Error(`requestBackend failed: ${resp.status}`);
   }
   return resp.data as T;

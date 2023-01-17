@@ -33,24 +33,39 @@ const QueryInputValidator = z.object({
   ]),
   offset: z.number().default(0),
   limit: z.number(),
+  order_by: z
+    .enum([
+      "id",
+      "title",
+      "start_date",
+      "end_date",
+      "status_updated_at",
+      "metadata_updated_at",
+    ])
+    .optional(),
+  sort: z.enum(["asc", "desc"]).default("desc"),
 });
 
 export type QueryInput = z.infer<typeof QueryInputValidator>;
 
+const QueryOuputEntryValidator = z.object({
+  id: z.number(),
+  title: z.string(),
+  nsfw: z.boolean().nullish(),
+  alternate_titles: z.any(),
+  image_url: z.string().nullish(),
+  json_data: z.any(),
+  approved_status: z.enum(["approved", "denied", "unapproved", "deleted"]),
+  start_date: z.string().nullish(),
+  end_date: z.string().nullish(),
+  metadata_updated_at: z.string().datetime({ offset: true }).nullish(),
+  status_updated_at: z.string().datetime({ offset: true }).nullish(),
+});
+
 const QueryOutputValidator = z.object({
   entry_type: z.enum(["anime", "manga"]),
   total_count: z.number(),
-  results: z.array(
-    z.object({
-      id: z.number(),
-      title: z.string(),
-      nsfw: z.boolean().nullish(),
-      alternate_titles: z.any(),
-      image_url: z.string().nullish(),
-      json_data: z.any(),
-      approved_status: z.enum(["approved", "denied", "unapproved", "deleted"]),
-    })
-  ),
+  results: z.array(QueryOuputEntryValidator),
 });
 
 export type QueryOutput = z.infer<typeof QueryOutputValidator>;
@@ -64,7 +79,7 @@ export const dataRouter = createTRPCRouter({
     .input(QueryInputValidator)
     .output(QueryOutputValidator)
     .query(async ({ input }) => {
-      return requestBackendEnv<QueryOutput>({
+      return await requestBackendEnv<QueryOutput>({
         url: "query/",
         method: "POST",
         body: input,

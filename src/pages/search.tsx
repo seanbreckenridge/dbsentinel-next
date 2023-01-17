@@ -11,12 +11,18 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
   faChevronLeft,
+  faQuestionCircle,
   faTimes,
 } from "@fortawesome/free-solid-svg-icons";
 
 import { api } from "../utils/api";
 
 const ALLOWED_JSON_KEYS = ["num_episodes", "volumes", "chapters", "media_type"];
+
+const INFO = `APPROVED: current approved MAL entry
+UNAPPROVED: submitted by a user, is waiting for moderator approval
+DELETED: was previously APPROVED, but has been deleted by a moderator
+DENIED: was previously UNAPPROVED, but has been denied by a moderator`;
 
 const unslugify = (slug: string) => {
   return slug.split("_").join(" ");
@@ -34,6 +40,8 @@ const Query: NextPage = () => {
   const [approvedStatus, setApprovedStatus] = useState("all");
   const [page, setPage] = useState(0);
   const [limit, setLimit] = useState(100);
+  const [orderBy, setOrderBy] = useState("id");
+  const [sort, setSort] = useState("desc");
 
   // cant use this immediately, need to wait till the user interacts with the page some
   // without it, the page will constantly reload when the user is typing
@@ -54,6 +62,7 @@ const Query: NextPage = () => {
     nsfwQuery = true;
   }
 
+  // validate/send user input to backend
   const query = api.data.dataQuery.useQuery(
     {
       entry_type:
@@ -70,6 +79,16 @@ const Query: NextPage = () => {
           : "all",
       offset: page * limit,
       limit: limit,
+      order_by:
+        orderBy === "id" ||
+        orderBy === "title" ||
+        orderBy === "start_date" ||
+        orderBy === "end_date" ||
+        orderBy === "status_updated_at" ||
+        orderBy === "metadata_updated_at"
+          ? orderBy
+          : "id",
+      sort: sort === "asc" || sort === "desc" ? sort : "desc",
     },
     {
       onSuccess: (data: QueryOutput) => {
@@ -219,6 +238,12 @@ const Query: NextPage = () => {
                   <option value="unapproved">Unapproved</option>
                   <option value="deleted">Deleted</option>
                 </select>
+                <div title="info" className="ml-2" onClick={() => alert(INFO)}>
+                  <FontAwesomeIcon
+                    icon={faQuestionCircle}
+                    className="ml-2 h-2 w-2"
+                  />
+                </div>
               </label>
               <label htmlFor="limit" className="m-1">
                 Per Page
@@ -236,6 +261,42 @@ const Query: NextPage = () => {
                   <option value="50">50</option>
                   <option value="100">100</option>
                   <option value="250">250</option>
+                </select>
+              </label>
+            </div>
+            <div className="m-1 flex flex-row items-center justify-start">
+              <label htmlFor="orderBy" className="m-1">
+                Order By
+                <select
+                  className="ml-2 rounded-md border-2 border-gray-300 p-2"
+                  value={orderBy}
+                  onChange={(e) => {
+                    setOrderBy(e.target.value.toLowerCase());
+                    usePageRef.current = true;
+                  }}
+                >
+                  <option value="id">ID</option>
+                  <option value="title">Title</option>
+                  <option value="start_date">Start Date</option>
+                  <option value="end_date">End Date</option>
+                  <option value="status_updated_at">Status Updated At</option>
+                  <option value="metadata_updated_at">
+                    Metadata Updated At
+                  </option>
+                </select>
+              </label>
+              <label htmlFor="sort" className="m-1">
+                Sort
+                <select
+                  className="ml-2 rounded-md border-2 border-gray-300 p-2"
+                  value={sort}
+                  onChange={(e) => {
+                    setSort(e.target.value.toLowerCase());
+                    usePageRef.current = true;
+                  }}
+                >
+                  <option value="asc">Ascending</option>
+                  <option value="desc">Descending</option>
                 </select>
               </label>
             </div>
