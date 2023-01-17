@@ -19,6 +19,25 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main>
+        <section className="flex w-full flex-col items-center px-4 text-center">
+          <div className="flex w-full flex-col items-center justify-center sm:flex-row pt-2">
+            <Link
+              className="m-2 text-blue-600 transition-colors duration-200 hover:text-blue-700"
+              href="/search?media_type=anime&status=approved&order_by=status_updated_at&sort=desc"
+            >
+              Recently Approved Anime
+            </Link>
+          </div>
+          <div className="flex w-full flex-col items-center justify-center sm:flex-row">
+            <Link
+              className="m-2 text-blue-600 transition-colors duration-200 hover:text-blue-700"
+              href="/search?media_type=anime&status=unapproved&order_by=id&sort=desc"
+            >
+              Recently Submitted Unapproved Anime
+            </Link>
+          </div>
+        </section>
+        <hr className="mx-auto my-2 w-6/12 border-gray-300" />
         <section
           className="flex w-full flex-col  items-center px-4 text-center"
           id="summary"

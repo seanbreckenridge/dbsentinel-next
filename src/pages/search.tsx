@@ -139,6 +139,31 @@ const Query: NextPage = () => {
         setApprovedStatus(qr.status);
       }
     }
+
+    if (qr.sfw) {
+      setSfw(true);
+    } else if (qr.nsfw) {
+      setNsfw(false);
+    }
+
+    if (qr.order_by) {
+      if (
+        qr.order_by === "id" ||
+        qr.order_by === "title" ||
+        qr.order_by === "start_date" ||
+        qr.order_by === "end_date" ||
+        qr.order_by === "status_updated_at" ||
+        qr.order_by === "metadata_updated_at"
+      ) {
+        setOrderBy(qr.order_by);
+      }
+    }
+
+    if (qr.sort) {
+      if (qr.sort === "asc" || qr.sort === "desc") {
+        setSort(qr.sort);
+      }
+    }
   }, [router.query]);
 
   const pageCount = usePageRef.current
