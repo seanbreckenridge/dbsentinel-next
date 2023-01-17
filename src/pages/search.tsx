@@ -238,13 +238,13 @@ const Query: NextPage = () => {
                   <option value="unapproved">Unapproved</option>
                   <option value="deleted">Deleted</option>
                 </select>
-                <div title="info" className="ml-2" onClick={() => alert(INFO)}>
-                  <FontAwesomeIcon
-                    icon={faQuestionCircle}
-                    className="ml-2 h-2 w-2"
-                  />
-                </div>
               </label>
+              <div title="info cursor" role="button" className="ml-2" onClick={() => alert(INFO)}>
+                <FontAwesomeIcon
+                  icon={faQuestionCircle}
+                  className="mx-1 mr-2 h-5 w-5"
+                />
+              </div>
               <label htmlFor="limit" className="m-1">
                 Per Page
                 <select
