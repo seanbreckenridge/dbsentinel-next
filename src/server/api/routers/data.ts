@@ -58,8 +58,8 @@ const QueryOuputEntryValidator = z.object({
   approved_status: z.enum(["approved", "denied", "unapproved", "deleted"]),
   start_date: z.string().nullish(),
   end_date: z.string().nullish(),
-  metadata_updated_at: z.string().datetime({ offset: true }).nullish(),
-  status_updated_at: z.string().datetime({ offset: true }).nullish(),
+  metadata_updated_at: z.number(),
+  status_updated_at: z.number(),
 });
 
 const QueryOutputValidator = z.object({

@@ -7,6 +7,7 @@ import ReactPaginate from "react-paginate";
 import { type QueryOutput } from "../server/api/routers/data";
 import { DebounceInput } from "react-debounce-input";
 
+import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faChevronRight,
@@ -24,11 +25,28 @@ UNAPPROVED: submitted by a user, is waiting for moderator approval
 DELETED: was previously APPROVED, but has been deleted by a moderator
 DENIED: was previously UNAPPROVED, but has been denied by a moderator`;
 
+const DELETED_INFO =
+  "These deleted/denied are estimates based on when data was added/last cached, and not necessarily when the entry was deleted/denied.";
+
 const unslugify = (slug: string) => {
   return slug.split("_").join(" ");
 };
 
-// TODO: Add ability to sort
+const statusLabel = (status: string) => {
+  if (status === "unapproved") {
+    return "Added on ";
+  } else if (status === "approved") {
+    return "Added on ";
+  } else if (status === "denied") {
+    return "Denied on ";
+  } else if (status === "deleted") {
+    return "Deleted on ";
+  }
+};
+
+const displayDate = (date: number) => {
+  return dayjs.unix(date).format("MMMM D, YYYY h:mm A");
+};
 
 const Query: NextPage = () => {
   // form values
@@ -239,7 +257,12 @@ const Query: NextPage = () => {
                   <option value="deleted">Deleted</option>
                 </select>
               </label>
-              <div title="info cursor" role="button" className="ml-2" onClick={() => alert(INFO)}>
+              <div
+                title="info cursor"
+                role="button"
+                className="ml-2"
+                onClick={() => alert(INFO)}
+              >
                 <FontAwesomeIcon
                   icon={faQuestionCircle}
                   className="mx-1 mr-2 h-5 w-5"
@@ -380,9 +403,18 @@ const Query: NextPage = () => {
                 <table className="table-fixed">
                   <thead>
                     <tr className="border-2 border-black bg-gray-100">
-                      <th className="px-4 py-2"></th>
-                      <th className="px-4 py-2">Meta</th>
-                      <th className="px-4 py-2">Data</th>
+                      <th className="px-2 py-2"></th>
+                      <th className="px-2 py-2">Meta</th>
+                      <th className="px-2 py-2">Data</th>
+                      <th className="cursor flex flex-row items-center justify-center px-2 py-2">
+                        <div>Dates</div>
+                        <FontAwesomeIcon
+                          icon={faQuestionCircle}
+                          className="mx-1 mr-2 h-5 w-5"
+                          title={DELETED_INFO}
+                          onClick={() => alert(DELETED_INFO)}
+                        />
+                      </th>
                     </tr>
                   </thead>
                   <tbody>
@@ -421,7 +453,7 @@ const Query: NextPage = () => {
                               </div>
                             )}
                           </td>
-                          <td className="w-1/12 border px-4 py-2">
+                          <td className="w-1/12 border px-2 py-2">
                             <div className="flex w-full flex-col items-center justify-center">
                               <div>
                                 {"ID: "}
@@ -452,7 +484,7 @@ const Query: NextPage = () => {
                               </div>
                             </div>
                           </td>
-                          <td className="w-4/12 border px-4 py-2">
+                          <td className="w-4/12 border px-2 py-2">
                             <div className="flex w-full flex-col items-center justify-center">
                               <div>{entry.title}</div>
                               <hr className="my-2 w-10/12" />
@@ -499,6 +531,26 @@ const Query: NextPage = () => {
                                   </a>
                                 </li>
                               </ul>
+                            </div>
+                          </td>
+                          <td className="w-2/12 border px-2 py-2">
+                            <div className="flex w-full flex-col items-center justify-center">
+                              <div className="text-xs">
+                                {"Start Date: "}
+                                {entry.start_date}
+                              </div>
+                              <div className="text-xs">
+                                {"End Date: "}
+                                {entry.end_date}
+                              </div>
+                              <div className="text-xs">
+                                {"Metadata Last Updated: "}
+                                {displayDate(entry.metadata_updated_at)}
+                              </div>
+                              <div className="text-xs">
+                                {statusLabel(entry.approved_status)}
+                                {displayDate(entry.status_updated_at)}
+                              </div>
                             </div>
                           </td>
                         </tr>
