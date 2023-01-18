@@ -23,7 +23,7 @@ const Home: NextPage = () => {
           <div className="flex w-full flex-col items-center justify-center sm:flex-row pt-2">
             <Link
               className="m-2 text-blue-600 transition-colors duration-200 hover:text-blue-700"
-              href="/search?media_type=anime&status=approved&order_by=status_updated_at&sort=desc"
+              href="/search?entry_type=anime&status=approved&order_by=status_updated_at&sort=desc"
             >
               Recently Approved Anime
             </Link>
@@ -31,7 +31,7 @@ const Home: NextPage = () => {
           <div className="flex w-full flex-col items-center justify-center sm:flex-row">
             <Link
               className="m-2 text-blue-600 transition-colors duration-200 hover:text-blue-700"
-              href="/search?media_type=anime&status=unapproved&order_by=id&sort=desc"
+              href="/search?entry_type=anime&status=unapproved&order_by=id&sort=desc"
             >
               Recently Submitted Unapproved Anime
             </Link>
@@ -69,7 +69,7 @@ const Home: NextPage = () => {
                             >
                               <Link
                                 className="text-blue-500 transition-colors duration-200 hover:text-blue-700"
-                                href={`/search/?media_type=${key}&status=${item.status}`}
+                                href={`/search/?entry_type=${key}&status=${item.status}`}
                               >
                                 {item.status}
                               </Link>

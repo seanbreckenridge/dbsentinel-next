@@ -17,8 +17,13 @@ import {
 } from "@fortawesome/free-solid-svg-icons";
 
 import { api } from "../utils/api";
+import {
+  animeMediaTypes,
+  mangaMediaTypes,
+  type AllMediaTypes,
+} from "../server/api/routers/mediaTypes";
 
-const ALLOWED_JSON_KEYS = ["num_episodes", "volumes", "chapters", "media_type"];
+const ALLOWED_JSON_KEYS = ["num_episodes", "volumes", "chapters"];
 
 const INFO = `APPROVED: current approved MAL entry
 UNAPPROVED: submitted by a user, is waiting for moderator approval
@@ -48,6 +53,23 @@ const displayDate = (date: number) => {
   return dayjs.unix(date).format("MMMM D, YYYY h:mm A");
 };
 
+type IMetadata = {
+  keyName: string;
+  value: string;
+};
+
+const MetadataRow = ({ keyName, value }: IMetadata) => {
+  return (
+    <li className="mx-3 flex flex-row items-center justify-center">
+      <div className="mr-1 text-xs">
+        {unslugify(keyName)}
+        {":"}
+      </div>
+      <div className="text-xs">{value.toString()}</div>
+    </li>
+  );
+};
+
 const Query: NextPage = () => {
   // form values
   const [title, setTitle] = useState("");
@@ -60,6 +82,9 @@ const Query: NextPage = () => {
   const [limit, setLimit] = useState(100);
   const [orderBy, setOrderBy] = useState("id");
   const [sort, setSort] = useState("desc");
+  const [filterMediaType, setFilterMediaType] = useState<
+    AllMediaTypes | undefined
+  >(undefined);
 
   // cant use this immediately, need to wait till the user interacts with the page some
   // without it, the page will constantly reload when the user is typing
@@ -107,6 +132,12 @@ const Query: NextPage = () => {
           ? orderBy
           : "id",
       sort: sort === "asc" || sort === "desc" ? sort : "desc",
+      media_type:
+        filterMediaType === undefined
+          ? undefined
+          : filterMediaType.toLowerCase() == "all"
+          ? undefined
+          : filterMediaType,
     },
     {
       onSuccess: (data: QueryOutput) => {
@@ -123,9 +154,9 @@ const Query: NextPage = () => {
 
   useEffect(() => {
     const qr = router.query;
-    if (qr.media_type) {
-      if (qr.media_type === "anime" || qr.media_type === "manga") {
-        setEntryType(qr.media_type);
+    if (qr.entry_type) {
+      if (qr.entry_type === "anime" || qr.entry_type === "manga") {
+        setEntryType(qr.entry_type);
       }
     }
 
@@ -258,6 +289,7 @@ const Query: NextPage = () => {
                   value={entryType}
                   onChange={(e) => {
                     setEntryType(e.target.value.toLowerCase());
+                    setFilterMediaType(undefined);
                     usePageRef.current = true;
                   }}
                 >
@@ -266,49 +298,60 @@ const Query: NextPage = () => {
                 </select>
               </label>
               <label htmlFor="approvedStatus" className="m-1">
-                Approved Status
-                <select
-                  className="ml-2 rounded-md border-2 border-gray-300 p-2"
-                  value={approvedStatus}
-                  onChange={(e) => {
-                    setApprovedStatus(e.target.value.toLowerCase());
-                    usePageRef.current = true;
-                  }}
-                >
-                  <option value="all">All</option>
-                  <option value="approved">Approved</option>
-                  <option value="denied">Denied</option>
-                  <option value="unapproved">Unapproved</option>
-                  <option value="deleted">Deleted</option>
-                </select>
+                <div className="flex flex-row items-center justify-start">
+                  <p>Approved Status</p>
+                  <div
+                    title="info cursor"
+                    role="button"
+                    className="ml-2"
+                    onClick={() => alert(INFO)}
+                  >
+                    <FontAwesomeIcon
+                      icon={faQuestionCircle}
+                      className="mx-1 mr-2 h-5 w-5"
+                    />
+                  </div>
+                  <select
+                    className="ml-2 rounded-md border-2 border-gray-300 p-2"
+                    value={approvedStatus}
+                    onChange={(e) => {
+                      setApprovedStatus(e.target.value.toLowerCase());
+                      usePageRef.current = true;
+                    }}
+                  >
+                    <option value="all">All</option>
+                    <option value="approved">Approved</option>
+                    <option value="denied">Denied</option>
+                    <option value="unapproved">Unapproved</option>
+                    <option value="deleted">Deleted</option>
+                  </select>
+                </div>
               </label>
-              <div
-                title="info cursor"
-                role="button"
-                className="ml-2"
-                onClick={() => alert(INFO)}
-              >
-                <FontAwesomeIcon
-                  icon={faQuestionCircle}
-                  className="mx-1 mr-2 h-5 w-5"
-                />
-              </div>
-              <label htmlFor="limit" className="m-1">
-                Per Page
+              <label htmlFor="Media Type" className="m-1">
+                Media Type
                 <select
                   className="ml-2 rounded-md border-2 border-gray-300 p-2"
-                  value={limit}
+                  value={filterMediaType}
                   onChange={(e) => {
-                    setLimit(parseInt(e.target.value));
-                    resetPagination();
+                    if (e.target.value.toLowerCase() === "all") {
+                      setFilterMediaType(undefined);
+                    }
+                    setFilterMediaType(e.target.value as AllMediaTypes);
                     usePageRef.current = true;
                   }}
                 >
-                  <option value="10">10</option>
-                  <option value="25">25</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="250">250</option>
+                  <option value="all">all</option>
+                  {entryType === "anime"
+                    ? animeMediaTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {unslugify(type)}
+                        </option>
+                      ))
+                    : mangaMediaTypes.map((type) => (
+                        <option key={type} value={type}>
+                          {unslugify(type)}
+                        </option>
+                      ))}
                 </select>
               </label>
             </div>
@@ -345,6 +388,24 @@ const Query: NextPage = () => {
                 >
                   <option value="asc">Ascending</option>
                   <option value="desc">Descending</option>
+                </select>
+              </label>
+              <label htmlFor="limit" className="m-1">
+                Per Page
+                <select
+                  className="ml-2 rounded-md border-2 border-gray-300 p-2"
+                  value={limit}
+                  onChange={(e) => {
+                    setLimit(parseInt(e.target.value));
+                    resetPagination();
+                    usePageRef.current = true;
+                  }}
+                >
+                  <option value="10">10</option>
+                  <option value="25">25</option>
+                  <option value="50">50</option>
+                  <option value="100">100</option>
+                  <option value="250">250</option>
                 </select>
               </label>
             </div>
@@ -514,6 +575,14 @@ const Query: NextPage = () => {
                               <div>{entry.title}</div>
                               <hr className="my-2 w-10/12" />
                               <ul className="flex w-full flex-row items-center justify-center">
+                                <MetadataRow
+                                  keyName="media type"
+                                  value={
+                                    entry.media_type
+                                      ? unslugify(entry.media_type)
+                                      : "unknown"
+                                  }
+                                />
                                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
                                 {Object.keys(entry.json_data)
                                   .filter((key: string) =>
@@ -527,18 +596,11 @@ const Query: NextPage = () => {
                                     const keyName =
                                       key == "num_episodes" ? "episodes" : key;
                                     return (
-                                      <li
+                                      <MetadataRow
                                         key={key}
-                                        className="mx-3 flex flex-row items-center justify-center"
-                                      >
-                                        <div className="mr-1 text-xs">
-                                          {unslugify(keyName)}
-                                          {":"}
-                                        </div>
-                                        <div className="text-xs">
-                                          {value.toString()}
-                                        </div>
-                                      </li>
+                                        keyName={keyName}
+                                        value={value}
+                                      />
                                     );
                                   })}
                                 <li

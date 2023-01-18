@@ -3,6 +3,8 @@ import { z } from "zod";
 import requestBackendEnv from "../../dataBackend";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
+import { allMediaTypesZod } from "./mediaTypes";
+
 export const SummaryValidator = z.object({
   status: z.string(),
   count: z.number(),
@@ -22,6 +24,7 @@ const QueryInputValidator = z.object({
   entry_type: z.enum(["anime", "manga"]).optional(),
   start_date: z.string().optional(),
   end_date: z.string().optional(),
+  media_type: allMediaTypesZod.optional(),
   nsfw: z.boolean().optional(),
   json_data: z.object({}).optional(),
   approved_status: z.enum([
@@ -54,6 +57,7 @@ const QueryOuputEntryValidator = z.object({
   nsfw: z.boolean().nullish(),
   alternate_titles: z.any(),
   image_url: z.string().nullish(),
+  media_type: allMediaTypesZod.nullish(),
   json_data: z.any(),
   approved_status: z.enum(["approved", "denied", "unapproved", "deleted"]),
   start_date: z.string().nullish(),
