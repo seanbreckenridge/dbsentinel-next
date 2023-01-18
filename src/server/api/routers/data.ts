@@ -25,6 +25,8 @@ const QueryInputValidator = z.object({
   start_date: z.string().optional(),
   end_date: z.string().optional(),
   media_type: allMediaTypesZod.optional(),
+  member_count: z.number().nullish(),
+  average_episode_duration: z.number().nullish(),
   nsfw: z.boolean().optional(),
   json_data: z.object({}).optional(),
   approved_status: z.enum([
@@ -44,6 +46,8 @@ const QueryInputValidator = z.object({
       "end_date",
       "status_updated_at",
       "metadata_updated_at",
+      "member_count",
+      "average_episode_duration",
     ])
     .optional(),
   sort: z.enum(["asc", "desc"]).default("desc"),
@@ -62,6 +66,8 @@ const QueryOuputEntryValidator = z.object({
   approved_status: z.enum(["approved", "denied", "unapproved", "deleted"]),
   start_date: z.string().nullish(),
   end_date: z.string().nullish(),
+  member_count: z.number().nullish(),
+  average_episode_duration: z.number().nullish(),
   metadata_updated_at: z.number(),
   status_updated_at: z.number(),
 });

@@ -128,7 +128,9 @@ const Query: NextPage = () => {
         orderBy === "start_date" ||
         orderBy === "end_date" ||
         orderBy === "status_updated_at" ||
-        orderBy === "metadata_updated_at"
+        orderBy === "metadata_updated_at" ||
+        orderBy === "member_count" ||
+        orderBy === "average_episode_duration"
           ? orderBy
           : "id",
       sort: sort === "asc" || sort === "desc" ? sort : "desc",
@@ -184,7 +186,9 @@ const Query: NextPage = () => {
         qr.order_by === "start_date" ||
         qr.order_by === "end_date" ||
         qr.order_by === "status_updated_at" ||
-        qr.order_by === "metadata_updated_at"
+        qr.order_by === "metadata_updated_at" ||
+        qr.order_by === "metadata_updated_at" ||
+        qr.order_by === "member_count"
       ) {
         setOrderBy(qr.order_by);
       }
@@ -374,6 +378,10 @@ const Query: NextPage = () => {
                   <option value="metadata_updated_at">
                     Metadata Updated At
                   </option>
+                  <option value="member_count">Popularity</option>
+                  <option value="average_episode_duration">
+                    Episode Duration
+                  </option>
                 </select>
               </label>
               <label htmlFor="sort" className="m-1">
@@ -507,7 +515,6 @@ const Query: NextPage = () => {
                     {query.data.results.map((entry) => {
                       // TODO: add:
                       // - link to anilist if that exists
-                      // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
                       const img = entry.image_url ?? undefined;
                       return (
                         <tr key={entry.id}>
@@ -574,7 +581,7 @@ const Query: NextPage = () => {
                             <div className="flex w-full flex-col items-center justify-center">
                               <div>{entry.title}</div>
                               <hr className="my-2 w-10/12" />
-                              <ul className="flex w-full flex-row items-center justify-center">
+                              <ul className="mb-2 flex w-full flex-row items-center justify-center">
                                 <MetadataRow
                                   keyName="media type"
                                   value={
@@ -583,6 +590,26 @@ const Query: NextPage = () => {
                                       : "unknown"
                                   }
                                 />
+                                <MetadataRow
+                                  keyName="members"
+                                  value={
+                                    entry.member_count
+                                      ? entry.member_count.toLocaleString()
+                                      : "-"
+                                  }
+                                />
+                                <MetadataRow
+                                  keyName="ep duration"
+                                  value={
+                                    entry.average_episode_duration
+                                      ? (entry.average_episode_duration / 60)
+                                          .toFixed(0)
+                                          .toString() + " min"
+                                      : "-"
+                                  }
+                                />
+                              </ul>
+                              <ul className="flex w-full flex-row items-center justify-center">
                                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
                                 {Object.keys(entry.json_data)
                                   .filter((key: string) =>
