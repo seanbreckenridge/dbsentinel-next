@@ -2,6 +2,7 @@ import { createTRPCRouter } from "./trpc";
 import { exampleRouter } from "./routers/example";
 import { settingsRouter } from "./routers/settings";
 import { dataRouter } from "./routers/data";
+import { userRouter } from "./routers/user";
 
 /**
  * This is the primary router for your server.
@@ -10,6 +11,7 @@ import { dataRouter } from "./routers/data";
  */
 export const appRouter = createTRPCRouter({
   example: exampleRouter,
+  user: userRouter,
   settings: settingsRouter,
   data: dataRouter,
 });

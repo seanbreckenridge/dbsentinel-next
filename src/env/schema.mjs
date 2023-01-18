@@ -21,6 +21,8 @@ export const serverSchema = z.object({
   ),
   DISCORD_CLIENT_ID: z.string(),
   DISCORD_CLIENT_SECRET: z.string(),
+  REDDIT_CLIENT_ID: z.string(),
+  REDDIT_CLIENT_SECRET: z.string(),
   DATA_BACKEND_URL: z.string().url(),
   DATA_BACKEND_SECRET: z.string().min(32),
 });

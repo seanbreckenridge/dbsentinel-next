@@ -34,15 +34,22 @@ export default function Navbar() {
             </Link>
           </li>
         )}
-        {/* login button with border on the right */}
-        <li className="border-3 flex flex-grow-0 items-center rounded-md bg-slate-100 p-2 px-3 text-black transition-colors">
-          {sessionData ? (
-            <button onClick={() => void signOut()}>Sign out</button>
-          ) : (
-            <button onClick={() => void signIn()}>Sign in</button>
-          )}
-        </li>
+        <SignInOutButton />
       </ul>
     </nav>
   );
 }
+
+const SignInOutButton = () => {
+  const { data: sessionData } = useSession();
+  const isSignedIn = sessionData ? true : false;
+  return (
+    <li
+      role="button"
+      className="border-3 flex flex-grow-0 items-center rounded-md bg-slate-100 p-2 px-3 text-black transition-colors"
+      onClick={() => (isSignedIn ? void signOut() : void signIn())}
+    >
+      {isSignedIn ? <p>Sign Out</p> : <p>Sign In</p>}
+    </li>
+  );
+};
