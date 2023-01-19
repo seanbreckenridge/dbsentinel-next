@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 import requestBackendEnv from "../../dataBackend";
-import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
+import { createTRPCRouter, publicProcedure } from "../trpc";
 
 import { allMediaTypesZod } from "./mediaTypes";
 
@@ -22,8 +22,6 @@ export type SummaryResponse = z.infer<typeof SummaryResponseValidator>;
 const QueryInputValidator = z.object({
   title: z.string().optional(),
   entry_type: z.enum(["anime", "manga"]).optional(),
-  start_date: z.string().optional(),
-  end_date: z.string().optional(),
   media_type: allMediaTypesZod.optional(),
   member_count: z.number().nullish(),
   average_episode_duration: z.number().nullish(),
