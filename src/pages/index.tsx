@@ -81,11 +81,11 @@ const Home: NextPage = () => {
                     </div>
                   ))}
                 </div>
-                <caption className="text-xs text-gray-500">
+                <div className="text-xs text-gray-500">
                   <div className="text-center">
                     Click on a status to search data
                   </div>
-                </caption>
+                </div>
               </div>
             )}
           </div>
