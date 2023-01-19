@@ -9,17 +9,13 @@ export default function requestBackendEnv<T>({
 }: {
   url: string;
   method?: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  body?: any;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  headers?: any;
+  body?: unknown;
+  headers?: unknown;
 }) {
   return requestBackend<T>({
     url,
     method,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     body,
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     headers,
     backendUrl: env.DATA_BACKEND_URL,
     auth: env.DATA_BACKEND_SECRET,
