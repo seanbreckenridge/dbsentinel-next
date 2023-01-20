@@ -2,6 +2,10 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { type Summary } from "../server/api/routers/data";
+import { createProxySSGHelpers } from "@trpc/react-query/ssg";
+import { appRouter } from "../server/api/root";
+import { prisma } from "../server/db";
+import superjson from "superjson";
 
 import { api } from "../utils/api";
 
@@ -97,5 +101,21 @@ const Home: NextPage = () => {
     </>
   );
 };
+
+export async function getStaticProps() {
+  const ssg = createProxySSGHelpers({
+    router: appRouter,
+    ctx: { session: null, prisma },
+    transformer: superjson,
+  });
+
+  await ssg.data.summary.prefetch(undefined);
+  return {
+    props: {
+      trpcState: ssg.dehydrate(),
+    },
+    revalidate: 1,
+  };
+}
 
 export default Home;
