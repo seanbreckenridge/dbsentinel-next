@@ -80,7 +80,6 @@ export type QueryOutput = z.infer<typeof QueryOutputValidator>;
 
 export const dataRouter = createTRPCRouter({
   summary: publicProcedure
-    .input(z.object({}).optional())
     .output(SummaryResponseValidator)
     .query(async () => requestBackendEnv<SummaryResponse>({ url: "summary/" })),
   dataQuery: publicProcedure

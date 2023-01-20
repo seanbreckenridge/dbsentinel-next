@@ -6,7 +6,10 @@ import { type Summary } from "../server/api/routers/data";
 import { api } from "../utils/api";
 
 const Home: NextPage = () => {
-  const summary = api.data.summary.useQuery();
+  const summary = api.data.summary.useQuery(undefined, {
+    staleTime: 1000 * 60 * 60,
+    refetchOnWindowFocus: false,
+  });
 
   return (
     <>
@@ -20,7 +23,7 @@ const Home: NextPage = () => {
       </Head>
       <main>
         <section className="flex w-full flex-col items-center px-4 text-center">
-          <div className="flex w-full flex-col items-center justify-center sm:flex-row pt-2">
+          <div className="flex w-full flex-col items-center justify-center pt-2 sm:flex-row">
             <Link
               className="m-2 text-blue-600 transition-colors duration-200 hover:text-blue-700"
               href="/search?entry_type=anime&status=approved&order_by=status_updated_at&sort=desc"

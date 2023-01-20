@@ -16,11 +16,5 @@ export const appRouter = createTRPCRouter({
   data: dataRouter,
 });
 
-const HOUR = 60 * 60;
-
-export const cachePaths: Map<string, number> = new Map([
-  ["data.summary", 1 * HOUR],
-]);
-
 // export type definition of API
 export type AppRouter = typeof appRouter;
