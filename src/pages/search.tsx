@@ -285,7 +285,7 @@ const Query: NextPage = () => {
                 }}
               />
             </label>
-            <div className="m-1 flex flex-col items-left justify-center sm:flex-row">
+            <div className="items-left m-1 flex flex-col justify-center sm:flex-row">
               <label htmlFor="entryType" className="m-1">
                 Type
                 <select
@@ -359,7 +359,7 @@ const Query: NextPage = () => {
                 </select>
               </label>
             </div>
-            <div className="m-1 flex flex-col items-left justify-center sm:flex-row">
+            <div className="items-left m-1 flex flex-col justify-center sm:flex-row">
               <label htmlFor="orderBy" className="m-1">
                 Order By
                 <select
@@ -494,7 +494,7 @@ const Query: NextPage = () => {
               </div>
             ) : query.data && query.data.total_count > 0 ? (
               <div className="container mx-auto flex w-full flex-col items-center justify-center">
-                <table className="table-fixed max-w-full">
+                <table className="max-w-full table-fixed">
                   <thead>
                     <tr className="border-2 border-black bg-gray-100">
                       <th className="px-2 py-2"></th>
@@ -538,6 +538,8 @@ const Query: NextPage = () => {
                                   alt="..."
                                   width={100}
                                   height={100}
+                                  // opt out of image optimization
+                                  loader={({ src }) => src}
                                 />
                               </a>
                             ) : (
@@ -581,7 +583,7 @@ const Query: NextPage = () => {
                             <div className="flex w-full flex-col items-center justify-center">
                               <div>{entry.title}</div>
                               <hr className="my-2 w-10/12" />
-                              <ul className="mb-2 flex w-full flex-col sm:flex-row items-center justify-center">
+                              <ul className="mb-2 flex w-full flex-col items-center justify-center sm:flex-row">
                                 <MetadataRow
                                   keyName="media type"
                                   value={
@@ -609,7 +611,7 @@ const Query: NextPage = () => {
                                   }
                                 />
                               </ul>
-                              <ul className="flex w-full sm:flex-row flex-col items-center justify-center">
+                              <ul className="flex w-full flex-col items-center justify-center sm:flex-row">
                                 {/* eslint-disable-next-line @typescript-eslint/no-unsafe-argument */}
                                 {Object.keys(entry.json_data)
                                   .filter((key: string) =>

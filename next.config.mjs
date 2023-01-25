@@ -18,6 +18,8 @@ const config = {
       "api-cdn.myanimelist.net",
       "dbsentinel.s3.us-west-1.amazonaws.com",
     ],
+    unoptimized: true,
+    loader: "custom",
   },
 };
 export default config;
