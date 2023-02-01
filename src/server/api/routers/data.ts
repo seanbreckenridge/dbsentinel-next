@@ -47,7 +47,7 @@ const QueryInputValidator = z.object({
       "member_count",
       "average_episode_duration",
     ])
-    .optional(),
+    .default("id"),
   sort: z.enum(["asc", "desc"]).default("desc"),
 });
 
