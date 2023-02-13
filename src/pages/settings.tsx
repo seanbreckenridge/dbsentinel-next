@@ -1,5 +1,5 @@
 import { useSession } from "next-auth/react";
-import { useState  } from "react";
+import { useState } from "react";
 
 import NotSignedIn from "../components/NotSignedIn";
 import { api } from "../utils/api";
@@ -15,7 +15,7 @@ const Settings = () => {
   const [username, setUsername] = useState<string | undefined>(undefined);
   const [error, setError] = useState("");
 
-  const me = api.user.me.useQuery()
+  const me = api.user.me.useQuery();
   const updateSettingsMutation = api.settings.updateSettings.useMutation();
 
   if (!session) {
@@ -73,7 +73,7 @@ const Settings = () => {
         </button>
       </form>
       <div className="mt-2 flex flex-col items-start">
-        {(error) && <p className="text-red-500">{error}</p>}
+        {error && <p className="text-red-500">{error}</p>}
         {updateSettingsMutation.isLoading && (
           <span className="ml-2">Saving...</span>
         )}
@@ -82,17 +82,16 @@ const Settings = () => {
         )}
         {updateSettingsMutation.isError && (
           <span className="ml-2 text-red-500">
-            {updateSettingsMutation.error.message.includes(`Unique constraint failed on the`) ? (
-              `Username already taken`
-            ) : (
-              `Something went wrong updating your settings`
-            )}
+            {updateSettingsMutation.error.message.includes(
+              `Unique constraint failed on the`
+            )
+              ? `Username already taken`
+              : `Something went wrong updating your settings`}
           </span>
-            )}
+        )}
       </div>
     </div>
   );
 };
-
 
 export default Settings;
