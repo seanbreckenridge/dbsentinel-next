@@ -557,7 +557,7 @@ const Query: NextPage = () => {
                                   <a
                                     className="text-blue-600"
                                     title="View on MAL"
-                                    href={`https://myanimelist.net/anime/${entry.id}`}
+                                    href={`https://myanimelist.net/${entryType}/${entry.id}`}
                                     target="_blank"
                                     rel="noreferrer"
                                   >
