@@ -7,6 +7,7 @@ import ReactPaginate from "react-paginate";
 import { type QueryOutput } from "../server/api/routers/data";
 import { DebounceInput } from "react-debounce-input";
 
+import Modal from "react-modal";
 import dayjs from "dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
@@ -70,6 +71,17 @@ const MetadataRow = ({ keyName, value }: IMetadata) => {
   );
 };
 
+Modal.setAppElement("#modal-root");
+
+const customStyles = {
+  content: {
+    top: "10%",
+    left: "10%",
+    right: "10%",
+    bottom: "10%",
+  },
+};
+
 const Query: NextPage = () => {
   // form values
   const [title, setTitle] = useState("");
@@ -85,6 +97,31 @@ const Query: NextPage = () => {
   const [filterMediaType, setFilterMediaType] = useState<
     AllMediaTypes | undefined
   >(undefined);
+
+  // modal
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [modalText, setModalText] = useState("");
+  const [copyText, setCopyText] = useState("");
+  const launchModalWithText = (text: string) => {
+    setCopyText("")
+    setModalText(text + text + text);
+    setModalIsOpen(true);
+  };
+  const closeModal = () => {
+    setModalIsOpen(false)
+  }
+
+  const copyModalToClipboard = () => {
+    navigator.clipboard
+      .writeText(modalText)
+      .then(() => {
+        setCopyText("copied to clipboard");
+      })
+      .catch((e) => {
+        setCopyText("failed to copy to clipboard, check console for details");
+        console.error(e);
+      });
+  };
 
   // cant use this immediately, need to wait till the user interacts with the page some
   // without it, the page will constantly reload when the user is typing
@@ -265,6 +302,42 @@ const Query: NextPage = () => {
           `}</style>
       </Head>
       <main className="container mx-auto flex min-h-screen flex-col items-center justify-start">
+        <Modal
+          style={customStyles}
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          contentLabel="More Info Text"
+        >
+          <div className="absolute top-5 right-5">
+            <div className="flex flex-row">
+              <div className="flex flex-col">
+                <button
+                  className="mr-2 rounded-md border border-black p-2"
+                  onClick={copyModalToClipboard}
+                >
+                  Copy to Clipboard
+                </button>
+              </div>
+              <button
+                className="rounded-md border border-[#ff0000] p-2"
+                onClick={closeModal}
+              >
+                Close
+              </button>
+            </div>
+            <div className="pl-2">
+              {copyText}
+            </div>
+          </div>
+          <pre
+            style={{
+              whiteSpace: "pre-wrap",
+              wordWrap: "break-word",
+            }}
+          >
+            {modalText}
+          </pre>
+        </Modal>
         <section className="flex w-full flex-col items-start justify-center p-3">
           <form
             className="flex w-full flex-col items-start justify-center"
@@ -640,7 +713,9 @@ const Query: NextPage = () => {
                                     className="cursor text-xs text-blue-600"
                                     role="button"
                                     onClick={() => {
-                                      alert(JSON.stringify(entry, null, 2));
+                                      launchModalWithText(
+                                        JSON.stringify(entry, null, 2)
+                                      );
                                     }}
                                   >
                                     more info
