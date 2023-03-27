@@ -543,7 +543,7 @@ const Query: NextPage = () => {
           <ReactPaginate
             breakLabel="..."
             nextLabel={<FontAwesomeIcon icon={faChevronRight} />}
-            onPageChange={(e) => {
+            onPageChange={(e: any) => {
               setPage(e.selected);
               usePageRef.current = true;
             }}
@@ -761,7 +761,7 @@ const Query: NextPage = () => {
           <ReactPaginate
             breakLabel="..."
             nextLabel={<FontAwesomeIcon icon={faChevronRight} />}
-            onPageChange={(e) => {
+            onPageChange={(e: any) => {
               setPage(e.selected);
               usePageRef.current = true;
             }}
