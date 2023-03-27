@@ -34,6 +34,11 @@ DENIED: was previously UNAPPROVED, but has been denied by a moderator`;
 const DELETED_INFO =
   "These deleted/denied are estimates based on when data was added/last cached, and not necessarily when the entry was deleted/denied.";
 
+// @types-react-paginate is 2 years out of date
+interface PaginateSelected {
+  selected: number
+}
+
 const unslugify = (slug: string) => {
   return slug.split("_").join(" ");
 };
@@ -543,8 +548,8 @@ const Query: NextPage = () => {
           <ReactPaginate
             breakLabel="..."
             nextLabel={<FontAwesomeIcon icon={faChevronRight} />}
-            onPageChange={(e) => {
-              setPage(e.selected);
+            onPageChange={(e: never) => {
+              setPage((e as PaginateSelected).selected);
               usePageRef.current = true;
             }}
             pageRangeDisplayed={3}
@@ -761,8 +766,8 @@ const Query: NextPage = () => {
           <ReactPaginate
             breakLabel="..."
             nextLabel={<FontAwesomeIcon icon={faChevronRight} />}
-            onPageChange={(e) => {
-              setPage(e.selected);
+            onPageChange={(e: never) => {
+              setPage((e as PaginateSelected).selected);
               usePageRef.current = true;
             }}
             pageRangeDisplayed={3}
